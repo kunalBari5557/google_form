@@ -197,52 +197,8 @@ const UserForm = () => {
 
     return (
         <div style={{ marginTop: '5rem' }}>
-            {formDetails?.title && (
-                <>
-                    <Form.Label className="form-label" htmlFor="basic-url">
-                        Enter Title *
-                    </Form.Label>
-                    <InputGroup className="mb-3">
-                        <Form.Control
-                            placeholder="Form Title"
-                            aria-label="Username"
-                            name="title"
-                            aria-describedby="basic-addon1"
-                            value={title}
-                            onChange={(e) => {
-                                setTitle(e.target.value);
-                                if (validationErrors.title) {
-                                    setValidationErrors({ ...validationErrors, title: '' });
-                                }
-                            }}
-                            required
-                        />
-                    </InputGroup>
-                    {validationErrors.title && <p style={{ color: 'red' }}>{validationErrors.title}</p>}
-                </>
-            )}
-            {formDetails?.description && (
-                <>
-                    <Form.Label className="form-label" htmlFor="basic-url">
-                        Description *
-                    </Form.Label>
-                    <FloatingLabel controlId="floatingTextarea2">
-                        <Form.Control
-                            as="textarea"
-                            placeholder="Leave a comment here"
-                            style={{ height: '100px' }}
-                            value={description}
-                            onChange={(e) => {
-                                setDescription(e.target.value);
-                                if (validationErrors.description) {
-                                    setValidationErrors({ ...validationErrors, description: '' });
-                                }
-                            }}
-                            required
-                        />
-                    </FloatingLabel>
-                </>
-            )}
+            <h1>{formDetails?.title}</h1>
+            <bold>{formDetails?.description}</bold>
             {specificResponse && (
                 <div>
                     {formDetails.response.map((response) => (
@@ -266,14 +222,14 @@ const UserForm = () => {
                                 </div>
                             )}
                             {response.fieldType === 'text' && (
-                               <Form.Control
-                               type="text"
-                               placeholder={response.placeHolder}
-                               value={formData[response._id] || ''}
-                               onChange={(e) => {
-                                   handleChange(response._id, e.target.value);
-                               }}
-                           />
+                                <Form.Control
+                                    type="text"
+                                    placeholder={response.placeHolder}
+                                    value={formData[response._id] || ''}
+                                    onChange={(e) => {
+                                        handleChange(response._id, e.target.value);
+                                    }}
+                                />
                             )}
                             {response.fieldType === 'checkbox' && (
                                 <div>

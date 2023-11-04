@@ -205,6 +205,7 @@ const handleQuestionChange = (responseIndex, question) => {
             onChange={(e) => handleFieldTypeChange(responseIndex, e.target.value)}
             required
           >
+            <option>Select Field Type</option>
             <option value="text">Text</option>
             <option value="radio">Radio</option>
             <option value="select">Select</option>

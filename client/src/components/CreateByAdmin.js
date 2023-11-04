@@ -30,25 +30,25 @@ function CreateByAdmin() {
           </tr>
         </thead>
         <tbody>
-          {data?.forms?.map((item,index) => (
+          {data?.forms?.map((item, index) => (
             <tr key={item._id}>
               <td>{index + 1}</td>
               <td>{item.title}</td>
               <td>{item.description}</td>
               <td>
-  <button
-    onClick={() => handleLinkClick(item._id)}
-    style={{
-      textDecoration: 'underline', // Add an underline
-      color: 'blue', // Set the text color to blue
-      background: 'none', // Remove the background color
-      border: 'none', // Remove the border
-      cursor: 'pointer', // Change the cursor to a pointer on hover
-    }}
-  >
-    Link
-  </button>
-</td>           
+                <button
+                  onClick={() => handleLinkClick(item._id)}
+                  style={{
+                    textDecoration: 'underline', // Add an underline
+                    color: 'blue', // Set the text color to blue
+                    background: 'none', // Remove the background color
+                    border: 'none', // Remove the border
+                    cursor: 'pointer', // Change the cursor to a pointer on hover
+                  }}
+                >
+                  Link
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
