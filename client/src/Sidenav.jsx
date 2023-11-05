@@ -99,16 +99,34 @@ export default function Sidenav() {
     setOpen(false);
   };
 
+  const styles = {
+    header: {
+      display: 'flex',
+      alignItems: 'center',
+    },
+    title: {
+      flex: 1, 
+      textAlign: 'center', 
+      fontSize: '24px', 
+      fontWeight: 'bold', 
+      color: '#2f2f2f', 
+      marginLeft: '500px', 
+    },
+  };
+
   return (
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="fixed" elevation={4} sx={{ backgroundColor: "#ffffff", color: "#2f2f2f" }}>
-          <Toolbar>
-            <IconButton color="inherit" aria-label="open drawer" onClick={() => setOpen(!open)} edge="start">
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+      <Toolbar>
+        <IconButton color="inherit" aria-label="open drawer" onClick={() => setOpen(!open)} edge="start">
+          <MenuIcon />
+        </IconButton>
+        <div style={styles.header}>
+          <h1 style={styles.title}>Custom Google Form</h1>
+        </div>
+      </Toolbar>
+    </AppBar>
         <Drawer variant="permanent" open={open}>
           <Divider />
           <List sx={{marginTop:"4rem"}}>

@@ -4,10 +4,10 @@ const userTestForm = require("../models/test");
 module.exports = {
   create: async (req, res) => {
     try {
-      const { formId, response } = req.body;
+      const { _id, response } = req.body;
 
       const schema = Joi.object({
-        formId: Joi.string().required(),
+        _id: Joi.string().required(),
         response: Joi.array().items(
           Joi.object({
             fieldType: Joi.string().required(),
@@ -18,7 +18,7 @@ module.exports = {
       });
 
       const result = schema.validate({
-        formId,
+        _id,
         response,
       });
 
@@ -29,7 +29,7 @@ module.exports = {
       }
 
       const form = await userTestForm.create({
-        formId: formId,
+        _id: _id,
         response,
       });
 
@@ -45,8 +45,8 @@ module.exports = {
 
   list: async (req, res) => {
     try {
-      const formId = req.params.formId;
-      const formResponse = await userTestForm.findOne({ formId });
+      const _id = req.params._id;
+      const formResponse = await userTestForm.findOne({ _id });
 
       if (!formResponse) {
         return res.status(404).json({ message: 'Form response not found.' });
