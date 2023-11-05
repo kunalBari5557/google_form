@@ -1,246 +1,197 @@
-import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Button from 'react-bootstrap/Button';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFormData, resetForm, addFormData } from '../redux/features/adminFormSlice';
+import React, { useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { setData, setError } from '../redux/features/adminFormSlice';
 import { useNavigate } from 'react-router-dom';
+
+const validationSchema = Yup.object({
+  question: Yup.string().required('Question is required'),
+  response: Yup.array().of(
+    Yup.object().shape({
+      fieldType: Yup.string().required('Field type is required'),
+      question: Yup.string().required('Question is required'),
+      options: Yup.array().when('fieldType', {
+        is: (fieldType) => ['text', 'radio', 'select', 'checkbox'].includes(fieldType),
+        then: Yup.array().required('Options are required'),
+      }),
+    })
+  ),
+});
 
 const AdminForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const formData = useSelector((state) => state.addFormDataState.formData);
-  const [validationErrors, setValidationErrors] = useState({});
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [responses, setResponses] = useState([
-    {
-      fieldType: '',
-      question: '',
-      options: [''],
-      isRequired: false,
-    },
-  ]);
+  const navigate = useNavigate()
+  const [showTextField, setShowTextField] = useState(false);
+  const [additionalFields, setAdditionalFields] = useState([]);
 
-  const validateForm = () => {
-    const errors = {};
-    if (!title) {
-      errors.title = 'Title is required';
-    } else {
-      delete errors.title;
-    }
-    if (!description) {
-      errors.description = 'Description is required';
-    } else {
-      delete errors.description;
-    }
-    if (responses.some((response) => !response.question)) {
-      errors.responses = 'All questions are required';
-    } else {
-      delete errors.responses;
-    }
-    if (responses.some((response) => !response.fieldType)) {
-      errors.fieldType = 'Field Type is required';
-    } else {
-      delete errors.fieldType;
-    }
-    setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
-
-  const handleSave = async () => {
-    if (validateForm()) {
-      const newFormData = {
-        title: title,
-        description: description,
-        responses: responses,
+  const handleSubmit = async (values, { setSubmitting }) => {
+    try {
+      navigate("/FormList")
+      const requestBody = {
+        title: values.title,
+        description: values.description,
+        response: [
+          {
+            fieldType: values.fieldType,
+            question: values.question,
+            options: values.additionalFields,
+          },
+        ],
       };
-      dispatch(setFormData(newFormData));
-      navigate('/FormList');
-      try {
-        await dispatch(addFormData(newFormData));
-        dispatch(resetForm());
-      } catch (error) {
-        console.error('Error saving data:', error);
+
+      const response = await fetch('http://localhost:4000/test/form/add', {
+        method: 'POST',
+        body: JSON.stringify(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        dispatch(setData(data));
+      } else {
+        const error = await response.json();
+        dispatch(setError(error));
       }
+    } catch (error) {
+      dispatch(setError('Network error'));
+    } finally {
+      setSubmitting(false);
     }
   };
 
-const handleQuestionChange = (responseIndex, question) => {
-    const updatedResponses = [...responses];
-    updatedResponses[responseIndex] = {
-      ...updatedResponses[responseIndex],
-      question: question,
-    };
-    setResponses(updatedResponses);
-  
-    if (validationErrors.responses && updatedResponses.every((response) => response.question)) {
-      setValidationErrors({ ...validationErrors, responses: '' });
-    }
-  };
-  
 
-  const handleFieldTypeChange = (index, fieldType) => {
-    const updatedResponses = [...responses];
-    updatedResponses[index] = {
-      ...updatedResponses[index],
-      fieldType: fieldType,
-      options: fieldType === 'select' ? [''] : [], 
-    };
-    setResponses(updatedResponses);
+  const handleAddField = () => {
+    setAdditionalFields([...additionalFields, '']); // Add an empty field
   };
 
-  const handleOptionChange = (responseIndex, optionIndex, option) => {
-    const updatedResponses = [...responses];
-    const updatedOptions = [...updatedResponses[responseIndex].options];
-    updatedOptions[optionIndex] = option;
-    updatedResponses[responseIndex] = {
-      ...updatedResponses[responseIndex],
-      options: updatedOptions,
-    };
-    setResponses(updatedResponses);
+  const handleRemoveField = (index) => {
+    const newFields = [...additionalFields];
+    newFields.splice(index, 1); // Remove the field at the specified index
+    setAdditionalFields(newFields);
   };
 
-  const addResponse = () => {
-    const updatedResponses = [...responses, {
-      fieldType: '',
-      question: '',
-      options: [''],
-      isRequired: false,
-    }];
-    setResponses(updatedResponses);
-  };
-
-  const addOption = (responseIndex) => {
-    const updatedResponses = [...responses];
-    const updatedOptions = [...updatedResponses[responseIndex].options, ''];
-    updatedResponses[responseIndex] = {
-      ...updatedResponses[responseIndex],
-      options: updatedOptions,
-    };
-    setResponses(updatedResponses);
-  };
-
-  const handleAddResponse = () => {
-    setResponses([
-      ...responses,
-      {
-        fieldType: '',
-        question: '',
-        options: [''],
-        isRequired: false,
-      },
-    ]);
-  };
-  
   return (
-    <div style={{ marginTop: '5rem' }} className="admin-form-container">
-      <Form.Label className="form-label" htmlFor="basic-url">
-        Enter Title *
-      </Form.Label>
-      <InputGroup className="mb-3">
-        <Form.Control
-          placeholder="Form Title"
-          aria-label="Username"
-          name="title"
-          aria-describedby="basic-addon1"
-          value={title}
-          onChange={(e) => {
-            setTitle(e.target.value);
-            if (validationErrors.title) {
-              setValidationErrors({ ...validationErrors, title: '' });
-            }
-          }}
-          required
-        />
-      </InputGroup>
-      {validationErrors.title && <p style={{ color: 'red' }}>{validationErrors.title}</p>}
-
-      <Form.Label className="form-label" htmlFor="basic-url">
-        Description *
-      </Form.Label>
-      <FloatingLabel controlId="floatingTextarea2">
-        <Form.Control
-          as="textarea"
-          placeholder="Leave a comment here"
-          style={{ height: '100px' }}
-          value={description}
-          onChange={(e) => {
-            setDescription(e.target.value);
-            if (validationErrors.description) {
-              setValidationErrors({ ...validationErrors, description: '' });
-            }
-          }}
-          required
-        />
-      </FloatingLabel>
-      {validationErrors.description && <p style={{ color: 'red' }}>{validationErrors.description}</p>}
-
-      {responses.map((response, responseIndex) => (
-        <div key={responseIndex}>
-          <Form.Label className="form-label" htmlFor="basic-url">
-            Add your question *
-          </Form.Label>
-          <InputGroup className="mb-3">
-            <Form.Control
-              placeholder="Form Title"
-              aria-label="Username"
-              aria-describedby="basic-addon1"
-              value={response.question}
-              onChange={(e) => handleQuestionChange(responseIndex, e.target.value)}
-              required
-            />
-          </InputGroup>
-          {validationErrors.responses && <p style={{ color: 'red' }}>{validationErrors.responses}</p>}
-
-          <Form.Label className="form-label" htmlFor="basic-url">
-            Select field type *
-          </Form.Label>
-          <Form.Select
-            className="select-input"
-            aria-label="Default select example"
-            value={response.fieldType}
-            onChange={(e) => handleFieldTypeChange(responseIndex, e.target.value)}
-            required
-          >
-            <option>Select Field Type</option>
-            <option value="text">Text</option>
-            <option value="radio">Radio</option>
-            <option value="select">Select</option>
-            <option value="checkbox">Checkbox</option>
-          </Form.Select>
-
-          {(response.fieldType === 'select' || response.fieldType === 'text' || response.fieldType === 'radio' || response.fieldType === 'checkbox') && (
-            <div>
-              {response.options.map((option, optionIndex) => (
-                <InputGroup className="mb-3" key={optionIndex}>
-                  <Form.Control
-                    placeholder="Option"
-                    aria-label="Option"
-                    aria-describedby="basic-addon1"
-                    value={option}
-                    onChange={(e) => handleOptionChange(responseIndex, optionIndex, e.target.value)}
-                    required
-                  />
-                </InputGroup>
-              ))}
-              <Button variant="primary" onClick={() => addOption(responseIndex)}>
-                Add Option
-              </Button>
+    <div style={{ marginTop: "5rem" }} className="container">
+      <Formik
+        initialValues={{
+          title: '',
+          description: '',
+          question: '',
+          fieldType: '',
+        }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, setFieldValue }) => (
+          <Form>
+            <div className="mb-3">
+              <label htmlFor="title" className="form-label">
+                Enter Title
+              </label>
+              <Field
+                type="text"
+                name="title"
+                className="form-control"
+                placeholder="Form Title"
+              />
+              <ErrorMessage name="title" component="div" className="error" />
             </div>
-          )}
-        </div>
-      ))}
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="primary" onClick={handleSave}>
-          Save
-        </Button>
-      </div>
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
+              <Field
+                as="textarea"
+                name="description"
+                className="form-control"
+                style={{ height: '100px' }}
+                placeholder="Leave a comment here"
+              />
+              <ErrorMessage name="description" component="div" className="error" />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="question" className="form-label">
+                Add your question *
+              </label>
+              <Field
+                type="text"
+                name="question"
+                className="form-control"
+                placeholder="Add question"
+                required
+              />
+              <ErrorMessage name="question" component="div" className="error" />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="fieldType" className="form-label">
+                Select field type *
+              </label>
+              <Field
+                as="select"
+                name="fieldType"
+                className="form-select"
+                onChange={(e) => {
+                  setFieldValue('fieldType', e.target.value);
+                  setShowTextField(e.target.value === 'text' || 'radio' || 'select' || 'checkbox');
+                }}
+                required
+              >
+                <option value="">Select Field Type</option>
+                <option value="text">Text</option>
+                <option value="radio">Radio</option>
+                <option value="select">Select</option>
+                <option value="checkbox">Checkbox</option>
+              </Field>
+              <ErrorMessage name="fieldType" component="div" className="error" />
+            </div>
+
+
+            {showTextField && (
+              <div className="mb-3">
+                {additionalFields.map((field, index) => (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
+                    <Field
+                      type="text"
+                      name={`additionalFields.${index}`}
+                      className="form-control"
+                      placeholder="Additional Text Field"
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-danger"
+                      onClick={() => handleRemoveField(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button type="button" style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }} className="btn btn-primary" onClick={handleAddField}>
+                  Add Field
+                </button>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <button type="submit" className="btn btn-primary">
+                Save
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
     </div>
   );
 };
 
 export default AdminForm;
+
+
+
+

@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const form_master = require("../models/form_master");
+const formCreateByAdmin = require("../models/formCreateByAdmin");
 
 module.exports = {
   create: async (req, res) => {
@@ -13,11 +13,10 @@ module.exports = {
           Joi.object({
             fieldType: Joi.string().required(),
             question: Joi.string().required(),
-            placeHolder: Joi.string().allow(""),
             options: Joi.array().items(Joi.string()),
-            isRequired: Joi.boolean(),
           })
-        )      });
+        )
+      });
 
       const result = schema.validate({
         title,
@@ -31,13 +30,14 @@ module.exports = {
         });
       }
 
-      const form = await form_master.create({
+      const form = await formCreateByAdmin.create({
         title,
         description,
         response,
       });
 
       return res.status(200).json({
+        form: form,
         message: "Form created successfully.",
       });
     } catch (error) {
@@ -48,7 +48,7 @@ module.exports = {
 
   list: async (req, res) => {
     try {
-      const forms = await form_master.find();
+      const forms = await formCreateByAdmin.find();
 
       return res.status(200).json({
         forms,
@@ -62,14 +62,14 @@ module.exports = {
   listId: async (req, res) => {
     try {
       const id = req.params.id;
-  
+
       // Fetch data based on the "id" parameter (replace with your actual query conditions)
-      const forms = await form_master.find({ _id: id });
-  
+      const forms = await formCreateByAdmin.find({ _id: id });
+
       if (forms.length === 0) {
         return res.status(404).json({ message: 'Form not found' });
       }
-  
+
       return res.status(200).json({
         form: forms[0], // Assuming you expect one form with the provided ID
       });
