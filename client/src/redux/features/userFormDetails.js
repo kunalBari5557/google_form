@@ -3,7 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 export const fetchDynamicData = createAsyncThunk(
   "api/fetchDynamicData",
   async (apiEndpoint) => {
-    const response = await fetch("http://localhost:4000/test/list");
+    const response = await fetch("https://form-app-server.onrender.com/test/list");
     return response.json();
   }
 );

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export const createByAdminForm = createAsyncThunk("api/fetchData", async () => {
-  const response = await fetch("http://localhost:4000/test/form/list");
+  const response = await fetch("https://form-app-server.onrender.com/test/form/list");
   return response.json();
 });
 

@@ -11,7 +11,7 @@ export const fetchFormDetailsById = createAsyncThunk(
   "form/fetchById",
   async (id) => {
     const response = await axios.get(
-      `http://localhost:4000/test/form/list/${id}`
+      `https://form-app-server.onrender.com/test/form/list/${id}`
     );
     return response.data.form;
   }

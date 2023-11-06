@@ -42,7 +42,7 @@ const AdminForm = () => {
         ],
       };
 
-      const response = await fetch("http://localhost:4000/test/form/add", {
+      const response = await fetch("https://form-app-server.onrender.com/test/form/add", {
         method: "POST",
         body: JSON.stringify(requestBody),
         headers: {
