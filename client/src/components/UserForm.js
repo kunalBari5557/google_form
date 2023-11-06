@@ -30,15 +30,20 @@ const UserForm = () => {
   const [selectedOptions, setSelectedOptions] = useState(null);
 
   const handleOptionChange = (responseId, optionValue) => {
+    console.log("responseId, optionValue",responseId, optionValue)
+    const existingResponseId = formData[responseId] || [];
+
     setFormData({
       ...formData,
-      [responseId]: optionValue,
+      [responseId]: [...existingResponseId, optionValue],
     });
 
     setSelectedRadio(optionValue);
     setSelectedOptions(optionValue);
     setErrorMessage("");
   };
+
+  console.log("formData",formData)
 
   useEffect(() => {
     if (selectedRadio !== null || selectedOptions !== null) {

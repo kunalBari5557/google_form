@@ -137,7 +137,7 @@ export default function Sidenav() {
                 <ListItemIcon>
                   <AiFillHome />
                 </ListItemIcon>
-                <Link to="/AdminForm" style={{ color: 'black', textDecoration: 'none' }}>Create Form</Link>
+                <Link to="/" style={{ color: 'black', textDecoration: 'none' }}>Create Form</Link>
               </ListItemButton>
             </ListItem>
             <ListItem disablePadding>
@@ -168,7 +168,7 @@ export default function Sidenav() {
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <Routes>
-            <Route path="/AdminForm" element={<AdminForm />} />
+            <Route path="/" element={<AdminForm />} />
             <Route path="/userForm/:formId" element={<UserForm />} />
             <Route path="/userFormDetails" element={<UserFormDetails />} />
             <Route path="/FormList" element={<CreateByAdmin />} />
