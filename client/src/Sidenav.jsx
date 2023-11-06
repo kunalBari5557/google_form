@@ -153,14 +153,6 @@ export default function Sidenav() {
                 <ListItemIcon>
                   <AiFillHome />
                 </ListItemIcon>
-                <Link to="/userForm" style={{ color: 'black', textDecoration: 'none' }}>User Form</Link>
-              </ListItemButton>
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  <AiFillHome />
-                </ListItemIcon>
                 <Link to="/userFormDetails" style={{ color: 'black', textDecoration: 'none' }}>User Form Details</Link>
               </ListItemButton>
             </ListItem>
