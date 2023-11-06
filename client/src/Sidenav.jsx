@@ -19,6 +19,8 @@ import { Link, Route, Router, Routes, useParams } from "react-router-dom";
 import AdminForm from "./components/AdminForm";
 import CreateByAdmin from "./components/CreateByAdmin";
 import UserForm from "./components/UserForm";
+import SuccessForm from "./components/SuccessForm";
+import UserFormDetails from "./components/UserFormDetails";
 
 const drawerWidth = 240;
 
@@ -154,13 +156,23 @@ export default function Sidenav() {
                 <Link to="/userForm" style={{ color: 'black', textDecoration: 'none' }}>User Form</Link>
               </ListItemButton>
             </ListItem>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <AiFillHome />
+                </ListItemIcon>
+                <Link to="/userFormDetails" style={{ color: 'black', textDecoration: 'none' }}>User Form Details</Link>
+              </ListItemButton>
+            </ListItem>
           </List>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <Routes>
             <Route path="/AdminForm" element={<AdminForm />} />
             <Route path="/userForm/:formId" element={<UserForm />} />
+            <Route path="/userFormDetails" element={<UserFormDetails />} />
             <Route path="/FormList" element={<CreateByAdmin />} />
+            <Route path="/SuccessfullyCreate" element={<SuccessForm />} />
           </Routes>
         </Box>
       </Box>

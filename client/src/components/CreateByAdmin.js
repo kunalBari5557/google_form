@@ -7,7 +7,7 @@ import { fetchFormDetailsById } from "../redux/features/formDetailsById";
 function CreateByAdmin() {
   const dispatch = useDispatch();
   const data = useSelector((state) => state.createByAdminFormState?.data);
-  const navigate = useNavigate(); // Initialize history
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(createByAdminForm());
@@ -19,7 +19,7 @@ function CreateByAdmin() {
   };
 
   return (
-    <div style={{ marginTop: '5rem' }}>
+    <div style={{ marginTop: "5rem" }}>
       <table className="table">
         <thead>
           <tr>
@@ -39,11 +39,11 @@ function CreateByAdmin() {
                 <button
                   onClick={() => handleLinkClick(item._id)}
                   style={{
-                    textDecoration: 'underline', // Add an underline
-                    color: 'blue', // Set the text color to blue
-                    background: 'none', // Remove the background color
-                    border: 'none', // Remove the border
-                    cursor: 'pointer', // Change the cursor to a pointer on hover
+                    textDecoration: "underline",
+                    color: "blue",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
                   }}
                 >
                   Link

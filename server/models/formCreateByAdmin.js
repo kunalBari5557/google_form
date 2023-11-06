@@ -27,5 +27,8 @@ const formCreateByAdmin = mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("formCreateByAdmin", formCreateByAdmin, "formCreateByAdmin");
-
+module.exports = mongoose.model(
+  "formCreateByAdmin",
+  formCreateByAdmin,
+  "formCreateByAdmin"
+);

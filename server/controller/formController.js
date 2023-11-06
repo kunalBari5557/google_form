@@ -15,7 +15,7 @@ module.exports = {
             question: Joi.string().required(),
             options: Joi.array().items(Joi.string()),
           })
-        )
+        ),
       });
 
       const result = schema.validate({
@@ -67,7 +67,7 @@ module.exports = {
       const forms = await formCreateByAdmin.find({ _id: id });
 
       if (forms.length === 0) {
-        return res.status(404).json({ message: 'Form not found' });
+        return res.status(404).json({ message: "Form not found" });
       }
 
       return res.status(200).json({
@@ -75,7 +75,7 @@ module.exports = {
       });
     } catch (error) {
       console.log(error);
-      return res.status(400).json({ message: 'Something went wrong.', error });
+      return res.status(400).json({ message: "Something went wrong.", error });
     }
-  }
+  },
 };

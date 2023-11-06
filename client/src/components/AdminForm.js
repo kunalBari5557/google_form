@@ -1,20 +1,21 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
-import { setData, setError } from '../redux/features/adminFormSlice';
-import { useNavigate } from 'react-router-dom';
+import "bootstrap/dist/css/bootstrap.min.css";
+import React, { useState } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { setData, setError } from "../redux/features/adminFormSlice";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
-  question: Yup.string().required('Question is required'),
+  question: Yup.string().required("Question is required"),
   response: Yup.array().of(
     Yup.object().shape({
-      fieldType: Yup.string().required('Field type is required'),
-      question: Yup.string().required('Question is required'),
-      options: Yup.array().when('fieldType', {
-        is: (fieldType) => ['text', 'radio', 'select', 'checkbox'].includes(fieldType),
-        then: Yup.array().required('Options are required'),
+      fieldType: Yup.string().required("Field type is required"),
+      question: Yup.string().required("Question is required"),
+      options: Yup.array().when("fieldType", {
+        is: (fieldType) =>
+          ["text", "radio", "select", "checkbox"].includes(fieldType),
+        then: Yup.array().required("Options are required"),
       }),
     })
   ),
@@ -22,13 +23,13 @@ const validationSchema = Yup.object({
 
 const AdminForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [showTextField, setShowTextField] = useState(false);
   const [additionalFields, setAdditionalFields] = useState([]);
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      navigate("/FormList")
+      navigate("/FormList");
       const requestBody = {
         title: values.title,
         description: values.description,
@@ -41,11 +42,11 @@ const AdminForm = () => {
         ],
       };
 
-      const response = await fetch('http://localhost:4000/test/form/add', {
-        method: 'POST',
+      const response = await fetch("http://localhost:4000/test/form/add", {
+        method: "POST",
         body: JSON.stringify(requestBody),
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
@@ -57,15 +58,14 @@ const AdminForm = () => {
         dispatch(setError(error));
       }
     } catch (error) {
-      dispatch(setError('Network error'));
+      dispatch(setError("Network error"));
     } finally {
       setSubmitting(false);
     }
   };
 
-
   const handleAddField = () => {
-    setAdditionalFields([...additionalFields, '']); // Add an empty field
+    setAdditionalFields([...additionalFields, ""]); // Add an empty field
   };
 
   const handleRemoveField = (index) => {
@@ -78,10 +78,10 @@ const AdminForm = () => {
     <div style={{ marginTop: "5rem" }} className="container">
       <Formik
         initialValues={{
-          title: '',
-          description: '',
-          question: '',
-          fieldType: '',
+          title: "",
+          description: "",
+          question: "",
+          fieldType: "",
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -109,10 +109,14 @@ const AdminForm = () => {
                 as="textarea"
                 name="description"
                 className="form-control"
-                style={{ height: '100px' }}
+                style={{ height: "100px" }}
                 placeholder="Leave a comment here"
               />
-              <ErrorMessage name="description" component="div" className="error" />
+              <ErrorMessage
+                name="description"
+                component="div"
+                className="error"
+              />
             </div>
 
             <div className="mb-3">
@@ -138,8 +142,13 @@ const AdminForm = () => {
                 name="fieldType"
                 className="form-select"
                 onChange={(e) => {
-                  setFieldValue('fieldType', e.target.value);
-                  setShowTextField(e.target.value === 'text' || 'radio' || 'select' || 'checkbox');
+                  setFieldValue("fieldType", e.target.value);
+                  setShowTextField(
+                    e.target.value === "text" ||
+                      "radio" ||
+                      "select" ||
+                      "checkbox"
+                  );
                 }}
                 required
               >
@@ -149,14 +158,24 @@ const AdminForm = () => {
                 <option value="select">Select</option>
                 <option value="checkbox">Checkbox</option>
               </Field>
-              <ErrorMessage name="fieldType" component="div" className="error" />
+              <ErrorMessage
+                name="fieldType"
+                component="div"
+                className="error"
+              />
             </div>
-
 
             {showTextField && (
               <div className="mb-3">
                 {additionalFields.map((field, index) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }}>
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginTop: "1rem",
+                    }}
+                  >
                     <Field
                       type="text"
                       name={`additionalFields.${index}`}
@@ -172,13 +191,22 @@ const AdminForm = () => {
                     </button>
                   </div>
                 ))}
-                <button type="button" style={{ display: 'flex', alignItems: 'center', marginTop: "1rem" }} className="btn btn-primary" onClick={handleAddField}>
+                <button
+                  type="button"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: "1rem",
+                  }}
+                  className="btn btn-primary"
+                  onClick={handleAddField}
+                >
                   Add Field
                 </button>
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button type="submit" className="btn btn-primary">
                 Save
               </button>
@@ -191,7 +219,3 @@ const AdminForm = () => {
 };
 
 export default AdminForm;
-
-
-
-
