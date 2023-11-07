@@ -27,43 +27,6 @@ const AdminForm = () => {
   const [showTextField, setShowTextField] = useState(false);
   const [additionalFields, setAdditionalFields] = useState([]);
 
-  // const handleSubmit = async (values, { setSubmitting }) => {
-  //   try {
-  //     navigate("/FormList");
-  //     const requestBody = {
-  //       title: values.title,
-  //       description: values.description,
-  //       response: [
-  //         {
-  //           fieldType: values.fieldType,
-  //           question: values.question,
-  //           options: values.additionalFields,
-  //         },
-  //       ],
-  //     };
-
-  //     const response = await fetch("https://form-app-server.onrender.com/test/form/add", {
-  //       method: "POST",
-  //       body: JSON.stringify(requestBody),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       dispatch(setData(data));
-  //     } else {
-  //       const error = await response.json();
-  //       dispatch(setError(error));
-  //     }
-  //   } catch (error) {
-  //     dispatch(setError("Network error"));
-  //   } finally {
-  //     setSubmitting(false);
-  //   }
-  // };
-
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       navigate("/FormList");
@@ -76,20 +39,16 @@ const AdminForm = () => {
             question: values.question,
             options: values.additionalFields,
           },
-          ...responses,
         ],
       };
 
-      const response = await fetch(
-        "https://form-app-server.onrender.com/test/form/add",
-        {
-          method: "POST",
-          body: JSON.stringify(requestBody),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch("https://form-app-server.onrender.com/test/form/add", {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (response.ok) {
         const data = await response.json();
@@ -106,27 +65,13 @@ const AdminForm = () => {
   };
 
   const handleAddField = () => {
-    setAdditionalFields([...additionalFields, ""]);
+    setAdditionalFields([...additionalFields, ""]); // Add an empty field
   };
 
   const handleRemoveField = (index) => {
     const newFields = [...additionalFields];
-    newFields.splice(index, 1);
+    newFields.splice(index, 1); // Remove the field at the specified index
     setAdditionalFields(newFields);
-  };
-  const [responses, setResponses] = useState([]);
-
-  const handleSave = (question, fieldType, options) => {
-    const newResponse = {
-      fieldType,
-      question,
-      options,
-    };
-
-    const updatedResponses = [...responses, newResponse];
-    console.log("updatedResponses", updatedResponses);
-
-    setResponses(updatedResponses);
   };
 
   return (
@@ -261,30 +206,11 @@ const AdminForm = () => {
               </div>
             )}
 
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() =>
-                  handleSave(
-                    values.question,
-                    values.fieldType,
-                    values.additionalFields
-                  )
-                }
-              >
-                Save
-              </button>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
               <button type="submit" className="btn btn-primary">
-                Submit
+                Save
               </button>
             </div>
-
-            {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <button type="submit" className="btn btn-primary">
-                Save
-              </button>
-            </div> */}
           </Form>
         )}
       </Formik>
